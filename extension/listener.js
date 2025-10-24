@@ -1,4 +1,7 @@
 (() => {
+    // console.log("click youtube")
+    // chrome.runtime.sendMessage({ command: "click", target: "youtube" });
+
   if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
     console.log("❌ Speech recognition not supported");
     return;
@@ -58,22 +61,20 @@
         command: "open",
         url: "https://www.google.com",
       });
-    } else if (transcript.includes("open linkedin")) {
+    }
+    else if (transcript.includes("open linkedin")) {
       chrome.runtime.sendMessage({
         command: "open",
         url: "https://www.linkedin.com",
       });
-    } else if (transcript.startsWith("click ")) {
+    }
+        
+    else if (transcript.startsWith("click ")) {
+        console.log("please click")
       const target = transcript.replace("click ", "").trim();
       
       chrome.runtime.sendMessage({ command: "click", target });
     }
-  };
-
-  recognition.onerror = (e) => {
-    console.warn("❌ Speech recognition error:", e.error);
-    isListening = false;
-    setTimeout(() => safeStart(), 1500);
   };
 
   recognition.onend = () => {
@@ -83,4 +84,4 @@
   };
 
   safeStart();
-})();
+  })();

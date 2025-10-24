@@ -7,28 +7,32 @@ chrome.runtime.onMessage.addListener((message, sender) => {
     chrome.scripting.executeScript({
       target: { tabId: sender.tab.id },
       func: (target) => {
-        // Try clicking elements that match the spoken word
-        const buttons = Array.from(
+        // Select all buttons, links, and input buttons
+        const elements = Array.from(
           document.querySelectorAll(
             "button, a, input[type=button], input[type=submit]"
           )
         );
-        const lowerTarget = target.toLowerCase();
 
+        const lowerTarget = target.toLowerCase();
         let found = false;
-        for (const btn of buttons) {
-          const text = (btn.innerText || btn.value || "").trim().toLowerCase();
+
+        for (const el of elements) {
+          const text = (el.innerText || el.value || "").trim().toLowerCase();
           if (text.includes(lowerTarget)) {
-            btn.click();
+            el.click();
             found = true;
-            console.log("Clicked:", text);
+            console.log("Clicked:", text, el.tagName);
             break;
           }
         }
 
-        if (!found) console.log("No matching button found for:", target);
+        if (!found)
+          console.log("No matching clickable element found for:", target);
       },
       args: [message.target],
     });
   }
+
+
 });

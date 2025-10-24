@@ -15,5 +15,8 @@
       "js": ["listener.js"]
     }
   ],
-  "permissions": ["tabs", "activeTab", "scripting"]
+  "permissions": ["tabs", "activeTab", "scripting"],
+  "host_permissions": [
+    "*://*/*" 
+  ]
 }
