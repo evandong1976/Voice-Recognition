@@ -1,0 +1,19 @@
+{
+  "name": "Voice Assistant Extension",
+  "description": "Voice-controlled Chrome extension",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "popup/popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["listener.js"]
+    }
+  ],
+  "permissions": ["tabs", "activeTab", "scripting"]
+}
