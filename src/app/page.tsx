@@ -27,10 +27,13 @@ function App() {
       const transcript = event.results[event.results.length - 1][0].transcript
         .trim()
         .toLowerCase();
+      
       console.log("Heard:", transcript);
       setStatus(`Heard: "${transcript}"`);
+
       if (statusRef.current)
         statusRef.current.textContent = `Heard: "${transcript}"`;
+
 
       if (transcript.includes("open github"))
         window.open("https://github.com", "_blank");
@@ -41,10 +44,10 @@ function App() {
     };
 
     recognition.onerror = (e: any) => {
-      console.error("Speech recognition error:", e);
-      setStatus("Error: " + e.error);
+      setStatus("Restarting listener...");
       if (statusRef.current)
-        statusRef.current.textContent = "Error: " + e.error;
+        statusRef.current.textContent = "Restarting listener...";
+      recognition.start(); // automatically restart
     };
 
     recognition.onend = () => {
@@ -56,13 +59,12 @@ function App() {
 
     recognition.start();
 
-    // Cleanup on unmount
     return () => recognition.stop();
   }, []);
 
 
   return (
-    <div className="relative w-screen h-screen bg-gradient-to-br from-purple-700 to-blue-500 flex flex-col items-center justify-center overflow-hidden">
+    <div className="relative w-screen h-screen bg-linear-to-br from-purple-700 to-blue-500 flex flex-col items-center justify-center overflow-hidden">
       <h1 className="text-white text-5xl font-bold drop-shadow-lg mb-8">
         🎤 Voice Command
       </h1>

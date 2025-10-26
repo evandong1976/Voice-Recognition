@@ -1,7 +1,4 @@
 (() => {
-    // console.log("click youtube")
-    // chrome.runtime.sendMessage({ command: "click", target: "youtube" });
-
   if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
     console.log("❌ Speech recognition not supported");
     return;
@@ -15,8 +12,9 @@
 
   const recognition = new SpeechRecognition();
   recognition.continuous = true;
-  recognition.interimResults = true; // 👈 enables partial results
+  recognition.interimResults = true;
   recognition.lang = "en-US";
+  recognition.phrases = []
 
   let isListening = false;
   let lastCommand = "";
@@ -61,18 +59,25 @@
         command: "open",
         url: "https://www.google.com",
       });
-    }
-    else if (transcript.includes("open linkedin")) {
+    } else if (transcript.includes("open youtube")) {
+      chrome.runtime.sendMessage({
+        command: "open",
+        url: "https://www.youtube.com",
+      });
+    } else if (transcript.includes("open gmail")) {
+      chrome.runtime.sendMessage({
+        command: "open",
+        url: "https://www.gmail.com",
+      });
+    } else if (transcript.includes("open linkedin")) {
       chrome.runtime.sendMessage({
         command: "open",
         url: "https://www.linkedin.com",
       });
-    }
-        
-    else if (transcript.startsWith("click ")) {
-        console.log("please click")
+    } else if (transcript.startsWith("click ")) {
+      console.log("please click");
       const target = transcript.replace("click ", "").trim();
-      
+
       chrome.runtime.sendMessage({ command: "click", target });
     }
   };
@@ -84,4 +89,4 @@
   };
 
   safeStart();
-  })();
+})();
