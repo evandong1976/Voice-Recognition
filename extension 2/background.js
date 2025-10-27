@@ -4,9 +4,6 @@ chrome.runtime.onMessage.addListener((message, sender) => {
   }
 
   if (message.command === "click" && message.target && sender.tab?.id) {
-
-    console.log("Click function")
-    // clear htmldivs
     chrome.scripting.executeScript({
       target: { tabId: sender.tab.id },
       func: (target) => {
@@ -16,39 +13,10 @@ chrome.runtime.onMessage.addListener((message, sender) => {
             "button, a, input[type=button], input[type=submit]"
           )
         );
-        
-        lowerTarget = target.toLowerCase()
 
-        for (const el of elements) {
-          const text = (el.innerText || el.value || "").trim().toLowerCase();
-          if (text.includes(lowerTarget)) {
-            htmldivs.push(el)
-          }
-        }
+        const lowerTarget = target.toLowerCase();
+        let found = false;
 
-        if (!htmldivs) {
-          console.log("No matching clickable element found for:", target);
-        }
-        previous_css = htmldivs[current_pointer].style.outline;
-        htmldivs[current_pointer].style.outline = "10px solid red";
-
-      },
-      args: [message.target],
-    });
-  }
-
-  if (message.command === "next" && htmldivs) { 
-    current_pointer = (current_pointer + 1) % htmldivs.length()
-    
-    
-    document.body.style.border = "5px solid red";
-  }
-
-});
-
-
-
-/*
         for (const el of elements) {
           const text = (el.innerText || el.value || "").trim().toLowerCase();
           if (text.includes(lowerTarget)) {
@@ -58,4 +26,13 @@ chrome.runtime.onMessage.addListener((message, sender) => {
             break;
           }
         }
-*/
+
+        if (!found)
+          console.log("No matching clickable element found for:", target);
+      },
+      args: [message.target],
+    });
+  }
+
+
+});

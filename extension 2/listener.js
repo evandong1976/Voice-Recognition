@@ -1,49 +1,3 @@
-/*
-let htmldivs = [];
-let current_pointer = 0;
-let previous_css = null;
-
-const click_target = (target) => {
-  console.log("CLICK ASDNAS")
-  const elements = Array.from(
-    document.querySelectorAll(
-      "button, a, input[type=button], input[type=submit]"
-    )
-  );
-  const lowerTarget = target.toLowerCase();
-
-  htmldivs = elements.filter((el) =>
-    (el.innerText || el.value || "").trim().toLowerCase().includes(lowerTarget)
-  );
-
-  if (htmldivs.length === 0) {
-    console.log("No matching clickable element found for:", target);
-    return;
-  }
-
-  previous_css = htmldivs[current_pointer].style.outline;
-  htmldivs[current_pointer].style.outline = "10px solid red";
-};
-
-const next_div = () => {
-  console.log("NEXT BXCZNB")
-  // remove old outline
-  htmldivs[current_pointer].style.outline = previous_css;
-  current_pointer = (current_pointer + 1) % htmldivs.length;
-
-  previous_css = htmldivs[current_pointer].style.outline;
-
-  htmldivs[current_pointer].style.outline = "10px solid red";
-
-  htmldivs[current_pointer].scrollIntoView({
-    behavior: "smooth",
-    block: "center",
-  });
-};
-*/
-
-let transcript = null;
-
 (() => {
   if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
     console.log("❌ Speech recognition not supported");
@@ -83,7 +37,7 @@ let transcript = null;
 
   recognition.onresult = (event) => {
     const result = event.results[event.results.length - 1];
-    transcript = result[0].transcript.trim().toLowerCase();
+    const transcript = result[0].transcript.trim().toLowerCase();
 
     console.log(result.isFinal ? "✅ Final:" : "💬 Interim:", transcript);
 
@@ -119,17 +73,17 @@ let transcript = null;
         url: "https://www.linkedin.com",
       });
     } else if (transcript.startsWith("click ")) {
-      const [command, ...rest] = str.split(" ");
-      console.log(target)
+      console.log("please click");
+      const target = transcript.replace("click ", "").trim();
+
+      chrome.runtime.sendMessage({ command: "click", target });
     }
   };
 
   recognition.onend = () => {
     isListening = false;
-    console.log("YOU STOPPED TALKING")
     console.log("🔁 Restarting listener...");
     setTimeout(() => safeStart(), 1000);
-    transcript.length = 0
   };
 
   safeStart();
